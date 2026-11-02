@@ -1,3 +1,4 @@
+with Ada_Compiler.Lexer;
 with Ada.Characters.Handling;
 with Ada.Strings.Unbounded;
 
@@ -144,6 +145,7 @@ package body Ada_Compiler.Parser is
       procedure Parse_Subprogram_Body is
          First     : constant Natural := Current.Offset;
          Unit_Name : Unbounded_String;
+         Saw_Is    : Boolean := False;
       begin
          Advance; -- procedure
          if Current.Kind /= Ada_Compiler.Lexer.Identifier then
@@ -164,12 +166,18 @@ package body Ada_Compiler.Parser is
          end loop;
 
          if At_Word ("is") then
+            Saw_Is := True;
             Advance;
             while Current.Kind /= Ada_Compiler.Lexer.End_Of_Input
               and then not At_Word ("begin")
             loop
                Advance;
             end loop;
+         end if;
+
+         if not Saw_Is then
+            Add_Diagnostic ("expected 'is' before procedure body");
+            return;
          end if;
 
          if not At_Word ("begin") then
