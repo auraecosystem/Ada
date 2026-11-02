@@ -35,13 +35,13 @@ gprbuild -P ada_compiler.gpr
 Run the native parser on the included example:
 
 ```sh
-./bin/ada-compiler examples/hello.adb
+./bin/ada_compiler_cli examples/hello.adb
 ```
 
 Inspect lexical tokens:
 
 ```sh
-./bin/ada-compiler --tokens examples/hello.adb
+./bin/ada_compiler_cli --tokens examples/hello.adb
 ```
 
 Run smoke tests:
