@@ -24,6 +24,17 @@ package body Ada_Compiler.Lexer is
              Offset => Natural (First - Source'First)));
       end Add;
 
+      function Is_Pair (A, B : Character) return Boolean is
+      begin
+         return (A = ':' and then B = '=')
+           or else (A = '=' and then B = '>')
+           or else (A = '.' and then B = '.')
+           or else (A = '*' and then B = '*')
+           or else (A = '<' and then (B = '=' or else B = '>' or else B = '<'))
+           or else (A = '>' and then (B = '=' or else B = '>'))
+           or else (A = '/' and then B = '=');
+      end Is_Pair;
+
    begin
       while I <= Source'Last loop
          if Source (I) = ' ' or else Source (I) = Character'Val (9)
@@ -37,8 +48,40 @@ package body Ada_Compiler.Lexer is
          then
             exit;
 
-         elsif Ada.Characters.Handling.Is_Letter (Source (I))
-         then
+         elsif Source (I) = '"' then
+            declare
+               First  : constant Integer := I;
+               Closed : Boolean := False;
+            begin
+               I := I + 1;
+               while I <= Source'Last loop
+                  if Source (I) = '"' then
+                     if I < Source'Last and then Source (I + 1) = '"' then
+                        I := I + 2;
+                     else
+                        I := I + 1;
+                        Closed := True;
+                        exit;
+                     end if;
+                  else
+                     I := I + 1;
+                  end if;
+               end loop;
+               Add
+                 ((if Closed then String_Literal else Invalid),
+                  First, I - 1);
+            end;
+
+         elsif Source (I) = ''' then
+            if I + 2 <= Source'Last and then Source (I + 2) = ''' then
+               Add (Character_Literal, I, I + 2);
+               I := I + 3;
+            else
+               Add (Punctuation, I, I);
+               I := I + 1;
+            end if;
+
+         elsif Ada.Characters.Handling.Is_Letter (Source (I)) then
             declare
                First : constant Integer := I;
             begin
@@ -67,6 +110,10 @@ package body Ada_Compiler.Lexer is
                end loop;
                Add (Integer_Literal, First, I - 1);
             end;
+
+         elsif I < Source'Last and then Is_Pair (Source (I), Source (I + 1)) then
+            Add (Punctuation, I, I + 1);
+            I := I + 2;
 
          else
             Add (Punctuation, I, I);
