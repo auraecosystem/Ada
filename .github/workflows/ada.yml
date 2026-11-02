@@ -2,7 +2,7 @@ name: Ada compiler foundation
 
 on:
   push:
-    branches: ["main", "foundation/**", "feature/**"]
+    branches: ["main", "foundation/**"]
   pull_request:
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gnat gprbuild
-      - name: Build compiler
+      - name: Build compiler foundation
         run: gprbuild -P ada_compiler.gpr
-      - name: Lexer and parser smoke tests
+      - name: Lexer CLI smoke test
         run: bash tests/smoke.sh

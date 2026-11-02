@@ -1,11 +1,11 @@
 # Ada — Independent Ada Compiler Project
 
-**Status:** native lexer and initial parser development  
+**Status:** compiler foundation / early development  
 **Repository:** [auraecosystem/Ada](https://github.com/auraecosystem/Ada)
 
 This repository is the home of an independently developed Ada language implementation: lexer, parser, semantic analysis, type checking, intermediate representation, code generation, runtime, tooling, and conformance infrastructure.
 
-The project is not currently an Ada-conforming compiler. GNAT is used as the bootstrap build tool and may be used for differential testing; it is not the parser or compiler backend.
+The project is not currently an Ada-conforming compiler. The initial milestone is a small, testable compiler foundation that can be built with GNAT while keeping the compiler implementation independent of GNAT.
 
 ## Project principles
 - Preserve Ada language semantics and document the targeted language revision.
@@ -32,25 +32,13 @@ Requires GNAT (GCC Ada) and GPRbuild.
 gprbuild -P ada_compiler.gpr
 ```
 
-Run the native parser on the included example:
+Run the initial lexer CLI:
 
 ```sh
-./bin/ada_compiler_cli examples/hello.adb
+./bin/ada-compiler examples/hello.adb
 ```
 
-Inspect lexical tokens:
-
-```sh
-./bin/ada_compiler_cli --tokens examples/hello.adb
-```
-
-Run smoke tests:
-
-```sh
-bash tests/smoke.sh
-```
-
-The parser currently supports only a documented initial subset of procedure compilation units. It does not yet implement the complete Ada grammar, semantic analysis, code generation, or execution.
+The first milestone provides lexical analysis only. Parsing, semantic analysis, code generation, and execution are subsequent milestones.
 
 ## Development
 

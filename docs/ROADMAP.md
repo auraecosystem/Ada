@@ -4,24 +4,17 @@
 - [x] Establish source layout and GPR project.
 - [x] Add an initial native Ada lexer API and CLI smoke-test driver.
 - [ ] Build and run with GNAT/GPRbuild in CI.
-- [ ] Add comprehensive lexer unit tests and structured lexical diagnostics.
+- [ ] Add lexer unit tests and structured diagnostics.
 
 ## Milestone 1 — Lexical correctness
-- [x] Recognize string and character literal token boundaries.
-- [x] Recognize common compound delimiters and preserve source offsets.
-- [x] Skip line comments without discarding following source lines.
-- [ ] Implement complete Ada numeric literal rules and validation.
-- [ ] Implement reserved-word classification and identifier legality.
-- [ ] Add line/column source positions and full lexical diagnostics.
+- Implement Ada reserved words, delimiters, comments, identifiers, numeric literals, character and string literals.
+- Preserve line, column, and byte/source offsets.
+- Add positive and negative lexical test cases.
 
 ## Milestone 2 — Syntax
-- [x] Define an initial AST node and source-span API.
-- [x] Parse simple context clauses and procedure bodies.
-- [x] Classify null statements, procedure calls, and assignments.
-- [x] Diagnose missing delimiters and mismatched procedure end names.
-- [ ] Expand to the selected Ada grammar revision, including packages, functions, declarations, expressions, and control flow.
-- [ ] Implement robust error recovery and hierarchical AST nodes.
-- [ ] Add parser golden tests and malformed-input regression tests.
+- Define a versioned grammar scope.
+- Implement parser, AST nodes, source spans, and recovery.
+- Add parser golden tests and malformed-input tests.
 
 ## Milestone 3 — Semantic foundation
 - Symbol tables and scopes.

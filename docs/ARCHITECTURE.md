@@ -2,19 +2,11 @@
 
 ## Current implementation
 
-The native frontend now has a token stream and a first recursive-descent parser. The lexer recognizes identifiers, integer-like numeric tokens, string and character literals, common compound delimiters, punctuation, line comments, and end-of-input.
+The first bootstrap milestone contains a native Ada package hierarchy and a lexer API. The lexer recognizes identifiers, integer-like numeric tokens, punctuation, line comments, and end-of-input. It is intentionally not presented as a complete Ada lexical implementation.
 
-The parser currently accepts a deliberately narrow compilation-unit subset:
-- zero or more simple `with Unit.Name;` context clauses;
-- one procedure body with an `is` and `begin` section;
-- semicolon-terminated statements, with basic classification of `null`, procedure calls, assignments, and other statements;
-- an optional matching procedure name after `end`.
+## Planned pipeline
 
-The AST is a source-spanned node sequence. It is an initial syntax representation, not yet a complete hierarchical Ada AST.
-
-## Pipeline
-
-`source → lexer → parser → syntax nodes + diagnostics → (planned) name resolution → type/semantic analysis → IR → optimization → backend`
+`source → lexer → parser → AST → name resolution → type/semantic analysis → IR → optimization → backend`
 
 The runtime and standard library are separate deliverables. External compiler adapters must not become hidden dependencies of the native frontend.
 
@@ -27,6 +19,6 @@ The runtime and standard library are separate deliverables. External compiler ad
 5. Bound memory and recursion when processing untrusted source.
 6. Record language-version decisions explicitly.
 
-## Current parser limitations
+## Initial limitations
 
-This parser is not a full Ada grammar. It does not yet parse package declarations, functions, parameter/type declarations, nested declarative constructs, control-flow statements, exception handlers, generic units, tasking, or expressions into typed ASTs. Statement parsing currently scans to a semicolon and classifies only a few statement forms. The lexer still lacks complete Ada numeric-literal validation, reserved-word classification, Unicode identifier policy, and precise lexical diagnostics.
+The bootstrap lexer does not yet implement Ada character/string literal rules, based literals, numeric separators, reserved-word classification, multi-character delimiters, Unicode identifier policy, or full lexical diagnostics. The CLI currently reads input line by line and is only a smoke-test driver.
