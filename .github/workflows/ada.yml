@@ -1,0 +1,21 @@
+name: Ada compiler foundation
+
+on:
+  push:
+    branches: ["main", "foundation/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install GNAT and GPRbuild
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnat gprbuild
+      - name: Build compiler foundation
+        run: gprbuild -P ada_compiler.gpr
+      - name: Lexer CLI smoke test
+        run: bash tests/smoke.sh

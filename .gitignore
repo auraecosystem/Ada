@@ -1,0 +1,15 @@
+obj/
+bin/
+*.ali
+*.o
+*.a
+*.so
+*.dll
+*.exe
+coverage/
+test-results/
+*.log
+.DS_Store
+.idea/
+.vscode/
+*.swp
