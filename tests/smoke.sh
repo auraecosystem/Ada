@@ -17,3 +17,9 @@ grep -q '^CONTEXT_CLAUSE Ada.Text_IO$' <<<"$parsed"
 grep -q '^SUBPROGRAM_BODY Hello$' <<<"$parsed"
 grep -q '^PROCEDURE_CALL Ada$' <<<"$parsed"
 grep -q '^COMPILATION_UNIT$' <<<"$parsed"
+
+if ./bin/ada-compiler tests/fixtures/bad_end_name.adb > /tmp/ada-parser-invalid.out 2>&1; then
+  echo "expected parser to reject mismatched end name" >&2
+  exit 1
+fi
+grep -q 'end name does not match procedure name' /tmp/ada-parser-invalid.out
