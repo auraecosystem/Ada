@@ -38,7 +38,6 @@ package body Ada_Compiler.Lexer is
             exit;
 
          elsif Ada.Characters.Handling.Is_Letter (Source (I))
-           or else Source (I) = '_'
          then
             declare
                First : constant Integer := I;
