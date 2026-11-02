@@ -1,6 +1,5 @@
 with Ada_Compiler.Lexer;
 with Ada.Characters.Handling;
-with Ada.Strings.Unbounded;
 
 package body Ada_Compiler.Parser is
    use Ada.Strings.Unbounded;
@@ -45,8 +44,8 @@ package body Ada_Compiler.Parser is
       procedure Add_Diagnostic (Message : String) is
       begin
          Result.Diagnostics.Append
-           ((Message => To_Unbounded_String (Message),
-             Offset  => Current.Offset));
+           (Diagnostic'(Message => To_Unbounded_String (Message),
+                        Offset  => Current.Offset));
       end Add_Diagnostic;
 
       procedure Add_Node
@@ -55,10 +54,10 @@ package body Ada_Compiler.Parser is
          First_Offset, Last_Offset : Natural) is
       begin
          Result.Nodes.Append
-           ((Kind => Kind,
-             Name => To_Unbounded_String (Name),
-             Span => (First_Offset => First_Offset,
-                      Last_Offset  => Last_Offset)));
+           (Node'(Kind => Kind,
+                  Name => To_Unbounded_String (Name),
+                  Span => (First_Offset => First_Offset,
+                           Last_Offset  => Last_Offset)));
       end Add_Node;
 
       procedure Expect_Punctuation (Value : String) is
