@@ -1,5 +1,4 @@
 with Ada.Characters.Handling;
-with Ada.Strings.Unbounded;
 
 package body Ada_Compiler.Lexer is
    use Ada.Strings.Unbounded;
@@ -19,9 +18,9 @@ package body Ada_Compiler.Lexer is
          end if;
 
          Result.Append
-           ((Kind   => Kind,
-             Lexeme => Value,
-             Offset => Natural (First - Source'First)));
+           (Token'(Kind   => Kind,
+                   Lexeme => Value,
+                   Offset => Natural (First - Source'First)));
       end Add;
 
       function Is_Pair (A, B : Character) return Boolean is
@@ -128,9 +127,9 @@ package body Ada_Compiler.Lexer is
       end loop;
 
       Result.Append
-        ((Kind   => End_Of_Input,
-          Lexeme => Null_Unbounded_String,
-          Offset => Natural (Source'Length)));
+        (Token'(Kind   => End_Of_Input,
+                Lexeme => Null_Unbounded_String,
+                Offset => Natural (Source'Length)));
       return Result;
    end Tokenize;
 end Ada_Compiler.Lexer;
