@@ -46,7 +46,13 @@ package body Ada_Compiler.Lexer is
          elsif Source (I) = '-' and then I < Source'Last
            and then Source (I + 1) = '-'
          then
-            exit;
+            I := I + 2;
+            while I <= Source'Last
+              and then Source (I) /= Character'Val (10)
+              and then Source (I) /= Character'Val (13)
+            loop
+               I := I + 1;
+            end loop;
 
          elsif Source (I) = '"' then
             declare
@@ -72,8 +78,8 @@ package body Ada_Compiler.Lexer is
                   First, I - 1);
             end;
 
-         elsif Source (I) = ''' then
-            if I + 2 <= Source'Last and then Source (I + 2) = ''' then
+         elsif Source (I) = '''' then
+            if I + 2 <= Source'Last and then Source (I + 2) = '''' then
                Add (Character_Literal, I, I + 2);
                I := I + 3;
             else
