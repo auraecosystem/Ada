@@ -4,7 +4,7 @@ The compiler is reporting that `Token_Kind` has an equality operator (`=`) decla
 
 Open `ada_compiler_cli.adb` and add the following `use type` clause after the existing `with` statements:
 
-```
+```adb
 with Ada_Compiler.Lexer;
 
 procedure Ada_Compiler_CLI is
@@ -13,7 +13,7 @@ procedure Ada_Compiler_CLI is
 
 If the procedure already has declarations, simply insert:
 
-```
+```ada
 use type Ada_Compiler.Lexer.Token_Kind;
 ```
 
@@ -25,7 +25,7 @@ Ada has strict operator visibility rules.
 
 Your lexer probably declares:
 
-```
+```adb
 type Token_Kind is
   (Identifier,
    Number,
@@ -35,7 +35,7 @@ type Token_Kind is
 
 When comparing values:
 
-```
+```ada
 if Current_Token.Kind = End_Of_File then
 ```
 
@@ -47,13 +47,13 @@ The `use type` clause makes primitive operators for that type directly visible w
 
 Run:
 
-```
+```bash
 gprbuild -P ada_compiler.gpr
 ```
 
 Then execute your smoke tests:
 
-```
+```Bash
 gprbuild -P ada_compiler.gpr -XBUILD_MODE=debug
 ```
 
@@ -67,4 +67,43 @@ Compiler visibility fix
 - No architectural modifications.
 - Only the required Ada visibility correction.
 
-Next step: Once compilation succeeds, run the lexer smoke tests and proceed with the native Ada parser implementation.
+
+
+I inspected `auraecosystem/Ada` before changing anything. There is an important discrepancy: the repository's root-level `ada_compiler_cli.adb` currently contains ACATS `TCTouch` test-support code, not the compiler CLI described by your build error. I won't overwrite that file blindly.
+
+The lexer specification does confirm that `Token_Kind` is declared in `Ada_Compiler.Lexer`, so the appropriate fix is still a `use type` clause in the actual compiler CLI source.
+
+Fix committed and verified
+
+Applied successfully to `main`.
+
+Repository: [auraecosystem/Ada](https://github.com/auraecosystem/Ada?utm_source=chatgpt.com)
+
+File changed: `cli/ada_compiler_cli.adb`
+
+Added:
+
+```ada
+use type Ada_Compiler.Lexer.Token_Kind;
+```
+
+Commit: `19fcb883a2f0d8af10a322751ab2c35be8d1c2ec`
+
+I fetched the file again from GitHub and verified that the change is present.
+
+Verification status:
+
+- Correct compiler CLI located.
+- Visibility error corrected.
+- Change committed to `main`.
+- Updated file verified remotely.
+- `gprbuild` compilation not yet executed.
+- ACATS tests not yet executed.
+
+Run this in your build environment:
+
+```bash
+gprbuild -P ada_compiler.gpr
+```
+
+The next step is to verify the build and address any remaining compiler errors.
