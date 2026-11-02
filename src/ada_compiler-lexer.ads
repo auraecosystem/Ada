@@ -7,6 +7,8 @@ package Ada_Compiler.Lexer is
    type Token_Kind is
      (Identifier,
       Integer_Literal,
+      String_Literal,
+      Character_Literal,
       Punctuation,
       End_Of_Input,
       Invalid);
