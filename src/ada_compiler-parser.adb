@@ -51,13 +51,15 @@ package body Ada_Compiler.Parser is
       procedure Add_Node
         (Kind : Node_Kind;
          Name : String;
-         First_Offset, Last_Offset : Natural) is
+         First_Offset, Last_Offset : Natural;
+         Parent_Index : Natural) is
       begin
          Result.Nodes.Append
-           (Node'(Kind => Kind,
-                  Name => To_Unbounded_String (Name),
-                  Span => (First_Offset => First_Offset,
-                           Last_Offset  => Last_Offset)));
+           (Node'(Kind         => Kind,
+                  Name         => To_Unbounded_String (Name),
+                  Span         => (First_Offset => First_Offset,
+                                   Last_Offset  => Last_Offset),
+                  Parent_Index => Parent_Index));
       end Add_Node;
 
       procedure Expect_Punctuation (Value : String) is
@@ -95,10 +97,10 @@ package body Ada_Compiler.Parser is
          Expect_Punctuation (";");
          Add_Node
            (Context_Clause, To_String (Name), First,
-            Tokens (Positive'Max (1, Cursor - 1)).Offset);
+            Tokens (Positive'Max (1, Cursor - 1)).Offset, 1);
       end Parse_Context_Clause;
 
-      procedure Parse_Statement is
+      procedure Parse_Statement (Body_Index : Natural) is
          First      : constant Natural := Current.Offset;
          Last       : Natural := First;
          Name       : Unbounded_String;
@@ -126,7 +128,7 @@ package body Ada_Compiler.Parser is
                      Kind := Procedure_Call;
                   end if;
                end if;
-               Add_Node (Kind, To_String (Name), First, Last);
+               Add_Node (Kind, To_String (Name), First, Last, Body_Index);
                return;
             elsif At_Punctuation (":=") then
                Has_Assign := True;
@@ -138,13 +140,14 @@ package body Ada_Compiler.Parser is
          end loop;
 
          Add_Diagnostic ("expected ';' after statement");
-         Add_Node (Kind, To_String (Name), First, Last);
+         Add_Node (Kind, To_String (Name), First, Last, Body_Index);
       end Parse_Statement;
 
       procedure Parse_Subprogram_Body is
-         First     : constant Natural := Current.Offset;
-         Unit_Name : Unbounded_String;
-         Saw_Is    : Boolean := False;
+         First      : constant Natural := Current.Offset;
+         Unit_Name  : Unbounded_String;
+         Saw_Is     : Boolean := False;
+         Body_Index : Natural := 0;
       begin
          Advance; -- procedure
          if Current.Kind /= Ada_Compiler.Lexer.Identifier then
@@ -186,12 +189,13 @@ package body Ada_Compiler.Parser is
          Advance;
 
          Add_Node
-           (Subprogram_Body, To_String (Unit_Name), First, Current.Offset);
+           (Subprogram_Body, To_String (Unit_Name), First, Current.Offset, 1);
+         Body_Index := Natural (Result.Nodes.Length);
 
          while Current.Kind /= Ada_Compiler.Lexer.End_Of_Input
            and then not At_Word ("end")
          loop
-            Parse_Statement;
+            Parse_Statement (Body_Index);
          end loop;
 
          if not At_Word ("end") then
@@ -215,6 +219,11 @@ package body Ada_Compiler.Parser is
       end Parse_Subprogram_Body;
 
    begin
+      --  The root is inserted first so every subsequent parent index is
+      --  stable and points to an already-created node.
+      Add_Node
+        (Compilation_Unit, "", 0, Natural (Source'Length), 0);
+
       while At_Word ("with") loop
          Parse_Context_Clause;
       end loop;
@@ -229,8 +238,6 @@ package body Ada_Compiler.Parser is
          Add_Diagnostic ("unexpected tokens after compilation unit");
       end if;
 
-      Add_Node
-        (Compilation_Unit, "", 0, Natural (Source'Length));
       Result.Success := Result.Diagnostics.Is_Empty;
       return Result;
    end Parse;
