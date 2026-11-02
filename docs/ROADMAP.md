@@ -3,7 +3,7 @@
 ## Milestone 0 — Repository bootstrap
 - [x] Establish source layout and GPR project.
 - [x] Add an initial native Ada lexer API and CLI smoke-test driver.
-- [ ] Build and run with GNAT/GPRbuild in CI.
+- [x] Build and run with GNAT/GPRbuild in CI.
 - [ ] Add comprehensive lexer unit tests and structured lexical diagnostics.
 
 ## Milestone 1 — Lexical correctness
@@ -19,8 +19,9 @@
 - [x] Parse simple context clauses and procedure bodies.
 - [x] Classify null statements, procedure calls, and assignments.
 - [x] Diagnose missing delimiters and mismatched procedure end names.
+- [x] Add parent-indexed AST relationships for compilation units, context clauses, bodies, and statements.
 - [ ] Expand to the selected Ada grammar revision, including packages, functions, declarations, expressions, and control flow.
-- [ ] Implement robust error recovery and hierarchical AST nodes.
+- [ ] Implement robust error recovery and hierarchical typed expression nodes.
 - [ ] Add parser golden tests and malformed-input regression tests.
 
 ## Milestone 3 — Semantic foundation
