@@ -18,5 +18,4 @@ jobs:
       - name: Build compiler foundation
         run: gprbuild -P ada_compiler.gpr
       - name: Lexer CLI smoke test
-        run: |
-          ./bin/ada-compiler examples/hello.adb
+        run: bash tests/smoke.sh
