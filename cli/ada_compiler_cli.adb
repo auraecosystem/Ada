@@ -6,6 +6,7 @@ with Ada_Compiler.Lexer;
 procedure Ada_Compiler_CLI is
    use Ada.Text_IO;
    use Ada.Strings.Unbounded;
+   use type Ada_Compiler.Lexer.Token_Kind;
 
    File : File_Type;
 begin
