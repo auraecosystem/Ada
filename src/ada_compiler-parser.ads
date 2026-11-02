@@ -16,10 +16,13 @@ package Ada_Compiler.Parser is
       Last_Offset  : Natural := 0;
    end record;
 
+   --  Parent_Index is zero only for the compilation-unit root. All other
+   --  nodes refer to an earlier node in Parse_Result.Nodes.
    type Node is record
-      Kind : Node_Kind := Other_Statement;
-      Name : Ada.Strings.Unbounded.Unbounded_String;
-      Span : Source_Span;
+      Kind         : Node_Kind := Other_Statement;
+      Name         : Ada.Strings.Unbounded.Unbounded_String;
+      Span         : Source_Span;
+      Parent_Index : Natural := 0;
    end record;
 
    package Node_Lists is new Ada.Containers.Vectors

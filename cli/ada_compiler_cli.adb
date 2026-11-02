@@ -22,7 +22,7 @@ begin
       Token_Mode := True;
       File_Name := To_Unbounded_String (Ada.Command_Line.Argument (2));
    else
-      Put_Line ("usage: ada-compiler [--tokens] <source-file>");
+      Put_Line ("usage: ada_compiler_cli [--tokens] <source-file>");
       Ada.Command_Line.Set_Exit_Status (Ada.Command_Line.Failure);
       return;
    end if;
@@ -52,11 +52,18 @@ begin
          Parsed : constant Ada_Compiler.Parser.Parse_Result :=
            Ada_Compiler.Parser.Parse (To_String (Source));
       begin
-         for Item of Parsed.Nodes loop
-            Put_Line
-              (Ada_Compiler.Parser.Node_Kind'Image (Item.Kind)
-               & (if Length (Item.Name) = 0 then ""
-                  else " " & To_String (Item.Name)));
+         for Index in Parsed.Nodes.First_Index .. Parsed.Nodes.Last_Index loop
+            declare
+               Item : constant Ada_Compiler.Parser.Node :=
+                 Parsed.Nodes (Index);
+            begin
+               Put_Line
+                 (Ada_Compiler.Parser.Node_Kind'Image (Item.Kind)
+                  & (if Length (Item.Name) = 0 then ""
+                     else " " & To_String (Item.Name))
+                  & " [parent:"
+                  & Natural'Image (Item.Parent_Index) & "]");
+            end;
          end loop;
 
          for Item of Parsed.Diagnostics loop
