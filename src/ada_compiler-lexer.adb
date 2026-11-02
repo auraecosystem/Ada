@@ -78,8 +78,8 @@ package body Ada_Compiler.Lexer is
                   First, I - 1);
             end;
 
-         elsif Source (I) = '''' then
-            if I + 2 <= Source'Last and then Source (I + 2) = '''' then
+         elsif Source (I) = Character'Val (39) then
+            if I + 2 <= Source'Last and then Source (I + 2) = Character'Val (39) then
                Add (Character_Literal, I, I + 2);
                I := I + 3;
             else
