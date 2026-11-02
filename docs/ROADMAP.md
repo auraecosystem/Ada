@@ -2,7 +2,7 @@
 
 ## Milestone 0 — Repository bootstrap
 - [x] Establish source layout and GPR project.
-- [x] Add an initial native Ada lexer API and CLI smoke-test driver.
+- [x] Add native lexer API and CLI smoke-test driver.
 - [x] Build and run with GNAT/GPRbuild in CI.
 - [ ] Add comprehensive lexer unit tests and structured lexical diagnostics.
 
@@ -10,40 +10,34 @@
 - [x] Recognize string and character literal token boundaries.
 - [x] Recognize common compound delimiters and preserve source offsets.
 - [x] Skip line comments without discarding following source lines.
-- [ ] Implement complete Ada numeric literal rules and validation.
-- [ ] Implement reserved-word classification and identifier legality.
-- [ ] Add line/column source positions and full lexical diagnostics.
+- [ ] Complete Ada numeric literal rules, reserved words, and identifier legality.
+- [ ] Add line/column positions and lexical diagnostics.
 
 ## Milestone 2 — Syntax
-- [x] Define an initial AST node and source-span API.
 - [x] Parse simple context clauses and procedure bodies.
-- [x] Classify null statements, procedure calls, and assignments.
-- [x] Diagnose missing delimiters and mismatched procedure end names.
-- [x] Add parent-indexed AST relationships for compilation units, context clauses, bodies, and statements.
-- [ ] Expand to the selected Ada grammar revision, including packages, functions, declarations, expressions, and control flow.
-- [ ] Implement robust error recovery and hierarchical typed expression nodes.
-- [ ] Add parser golden tests and malformed-input regression tests.
+- [x] Classify basic statement forms and validate matching end names.
+- [x] Add parent-indexed compilation-unit AST relationships.
+- [x] Add a separate expression parser with operator precedence and parent-indexed expression nodes.
+- [ ] Integrate expression ASTs into assignments and procedure calls.
+- [ ] Add packages, functions, parameter profiles, declarations, and control flow.
+- [ ] Implement complete grammar coverage, recovery, and regression tests.
 
 ## Milestone 3 — Semantic foundation
-- Symbol tables and scopes.
-- Visibility and name resolution.
-- Type model, overload resolution, legality rules, and diagnostics.
+- [ ] Symbol tables, scopes, visibility, and name resolution.
+- [ ] Type model, overload resolution, and legality rules.
 
 ## Milestone 4 — Executable compiler
-- Typed intermediate representation.
-- First backend and runtime contract.
-- End-to-end executable examples.
+- [ ] Typed intermediate representation.
+- [ ] First backend, runtime contract, and end-to-end examples.
 
 ## Milestone 5 — Verification
-- Unit, integration, regression, fuzz, and differential tests.
-- ACATS harness integration using the official suite and its instructions.
-- Evidence-backed reports with explicit unsupported/not-applicable states.
+- [ ] Unit, integration, regression, fuzz, and differential tests.
+- [ ] ACATS harness integration and evidence-backed conformance reporting.
 
 ## Milestone 6 — LMLM integration
-- A versioned compiler adapter protocol.
-- Sandboxed compilation and execution.
-- Structured diagnostics and artifact provenance.
-- Policy-controlled tool invocation.
+- [ ] Versioned compiler adapter protocol.
+- [ ] Sandboxed compilation/execution and artifact provenance.
+- [ ] Policy-controlled tool invocation.
 
 ## Release gates
-No milestone is complete until its tests run in CI. No conformance claim is permitted without a documented test scope, exact toolchain/compiler revisions, logs, and reproducible results.
+No milestone is complete until its tests run in CI. Do not claim full Ada conformance without a documented test scope, exact toolchain revisions, logs, and reproducible results.

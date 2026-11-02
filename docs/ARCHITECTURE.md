@@ -2,37 +2,32 @@
 
 ## Current implementation
 
-The native frontend has a token stream and a first recursive-descent parser. The lexer recognizes identifiers, integer-like numeric tokens, string and character literals, common compound delimiters, punctuation, line comments, and end-of-input.
+The native frontend consists of a lexer, a restricted compilation-unit parser, and a separately testable expression parser.
 
-The parser currently accepts a deliberately narrow compilation-unit subset:
-- zero or more simple `with Unit.Name;` context clauses;
+The lexer recognizes identifiers, integer-like numeric tokens, string and character literals, common compound delimiters, punctuation, line comments, and end-of-input.
+
+The compilation-unit parser currently accepts:
+- simple `with Unit.Name;` context clauses;
 - one procedure body with an `is` and `begin` section;
 - semicolon-terminated statements, with basic classification of `null`, procedure calls, assignments, and other statements;
 - an optional matching procedure name after `end`.
 
-The syntax representation is now a parent-indexed AST:
-- node 1 is the compilation-unit root (parent index 0);
-- context clauses and the subprogram body are children of the root;
-- statements are children of the subprogram-body node;
-- parent indices point to nodes created earlier in the node vector, making traversal deterministic without pointer ownership or cycles.
+Compilation-unit nodes use parent indices: the root has parent 0, context clauses and the body point to the root, and statements point to the body.
 
-Source spans remain byte offsets into the original source. The parser is still an initial subset parser, not a complete Ada grammar.
+The expression parser is independently callable through the CLI's `--expr` mode. It recognizes identifiers, integer/string/character literals, parentheses, unary `+`, `-`, `not`, and binary operators with precedence tiers:
+1. `or`, `xor`;
+2. `and`;
+3. relational operators;
+4. `+`, `-`, concatenation `&`;
+5. `*`, `/`, `mod`, `rem`;
+6. exponentiation `**` (right associative).
+
+Expression nodes preserve byte offsets and parent indices. This is a foundational expression grammar, not yet the complete Ada expression grammar and not yet integrated into assignment/call statement nodes.
 
 ## Pipeline
 
-`source → lexer → parser → hierarchical syntax nodes + diagnostics → (planned) name resolution → type/semantic analysis → IR → optimization → backend`
+`source → lexer → compilation-unit parser / expression parser → AST + diagnostics → name resolution → type/semantic analysis → IR → backend`
 
-The runtime and standard library are separate deliverables. External compiler adapters must not become hidden dependencies of the native frontend.
+## Current limitations
 
-## Design constraints
-
-1. Preserve source offsets and evolve them into line/column source spans.
-2. Keep syntax recognition separate from semantic legality checks.
-3. Represent diagnostics as structured data, not formatted strings.
-4. Make compiler stages independently testable.
-5. Bound memory and recursion when processing untrusted source.
-6. Record language-version decisions explicitly.
-
-## Current parser limitations
-
-This parser is not a full Ada grammar. It does not yet parse package declarations, functions, parameter/type declarations, nested declarative constructs, control-flow statements, exception handlers, generic units, tasking, or expressions into typed ASTs. Statement parsing currently scans to a semicolon and classifies only a few statement forms. The lexer still lacks complete Ada numeric-literal validation, reserved-word classification, Unicode identifier policy, and precise lexical diagnostics.
+The project is not a complete Ada compiler. It does not yet parse packages, functions, parameter profiles, declarations, control flow, exception handlers, generics, tasking, or full expression syntax such as qualified expressions, aggregates, attributes, membership tests, and range expressions. Numeric literal validation, reserved-word classification, Unicode identifier policy, line/column diagnostics, error recovery, semantic analysis, code generation, and ACATS execution remain future work.
