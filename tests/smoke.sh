@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-tokens="$(./bin/ada-compiler --tokens examples/hello.adb)"
+tokens="$(./bin/ada_compiler_cli --tokens examples/hello.adb)"
 printf '%s\n' "$tokens"
 
 grep -q '^IDENTIFIER with$' <<<"$tokens"
@@ -10,7 +10,7 @@ grep -q '^IDENTIFIER procedure$' <<<"$tokens"
 grep -q '^IDENTIFIER Hello$' <<<"$tokens"
 grep -q '^STRING_LITERAL "Hello, Ada compiler!"$' <<<"$tokens"
 
-parsed="$(./bin/ada-compiler examples/hello.adb)"
+parsed="$(./bin/ada_compiler_cli examples/hello.adb)"
 printf '%s\n' "$parsed"
 
 grep -q '^CONTEXT_CLAUSE Ada.Text_IO$' <<<"$parsed"
@@ -18,7 +18,7 @@ grep -q '^SUBPROGRAM_BODY Hello$' <<<"$parsed"
 grep -q '^PROCEDURE_CALL Ada$' <<<"$parsed"
 grep -q '^COMPILATION_UNIT$' <<<"$parsed"
 
-if ./bin/ada-compiler tests/fixtures/bad_end_name.adb > /tmp/ada-parser-invalid.out 2>&1; then
+if ./bin/ada_compiler_cli tests/fixtures/bad_end_name.adb > /tmp/ada-parser-invalid.out 2>&1; then
   echo "expected parser to reject mismatched end name" >&2
   exit 1
 fi
