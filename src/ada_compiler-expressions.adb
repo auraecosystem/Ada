@@ -114,7 +114,7 @@ package body Ada_Compiler.Expressions is
          then
             Op := Current.Lexeme;
             Advance;
-            Child := Parse_Expression (7);
+            Child := Parse_Expression (6);
             Node := Add_Node
               (Unary_Expression, To_String (Op), First,
                Result.Nodes (Child).Last_Offset);
